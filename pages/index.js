@@ -1,6 +1,7 @@
 import { useSession } from 'next-auth/react'
 import Head from 'next/head'
 import Login from '../components/login';
+import Sidebar from '../components/sidebar';
 
 export default function Home() {
 
@@ -16,9 +17,9 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <h1 className="text-3xl font-bold underline">
-        Hello world!
-      </h1>
+      <main className='relative max-w-[1400px] mx-auto'>
+        <Sidebar />
+      </main>
     </div>
   )
 }
