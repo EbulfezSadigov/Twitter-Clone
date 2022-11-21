@@ -1,5 +1,6 @@
 import { useSession } from 'next-auth/react'
 import Head from 'next/head'
+import Feed from '../components/feed';
 import Login from '../components/login';
 import Sidebar from '../components/sidebar';
 
@@ -19,6 +20,9 @@ export default function Home() {
 
       <main className='relative max-w-[1400px] mx-auto'>
         <Sidebar />
+        <div className='flex gap-6'>
+            <Feed/>
+        </div>
       </main>
     </div>
   )
