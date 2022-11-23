@@ -5,15 +5,21 @@ import { AiOutlineGif, AiOutlineClose } from "react-icons/ai"
 import { RiBarChart2Line } from "react-icons/ri"
 import { IoCalendarNumberOutline } from "react-icons/io5"
 import { HiOutlineLocationMarker } from "react-icons/hi"
+import data from '@emoji-mart/data'
+import Picker from '@emoji-mart/react'
+import { addDoc, collection, doc, serverTimestamp, updateDoc } from 'firebase/firestore'
+import { db, storage } from '../firebase'
+import { getDownloadURL, ref, uploadString } from 'firebase/storage'
 
 const Input = () => {
 
-    const [loading, setloading] = useState(false)
+    const [loading, setLoading] = useState(false)
     const [input, setinput] = useState('')
+    const [showEmojis, setShowEmojis] = useState(false)
     const { data: session } = useSession();
     const [selectedFile, setselectedFile] = useState(null)
 
-    const addImageToPost=(e)=>{
+    const addImageToPost = (e) => {
         const reader = new FileReader()
         if (e.target.files[0]) {
             reader.readAsDataURL(e.target.files[0])
@@ -21,6 +27,48 @@ const Input = () => {
         reader.onload = (readerEvent) => {
             setselectedFile(readerEvent.target.result)
         }
+    }
+
+    const addEmoji = (e) => {
+        let sym = e.unified.split("-")
+        let codesArray = []
+        sym.forEach((el) => codesArray.push("0x" + el))
+        let emoji = String.fromCodePoint(...codesArray)
+        setinput(input + emoji)
+    }
+
+    const sendPost = async () => {
+        if (loading)
+            return
+
+        setLoading(true)
+
+        const docRef = await addDoc(collection(db, 'posts'), {
+            id: session.user.uid,
+            username: session.user.name,
+            userImg: session.user.image,
+            tag: session.user.tag,
+            text: input,
+            timestamp: serverTimestamp(),
+        })
+
+        const imageRef = ref(storage, `posts/${docRef.id}/image`)
+
+        if (selectedFile) {
+            await uploadString(imageRef, selectedFile, "data_url")
+                .then(async () => {
+                    const downloadURL = await getDownloadURL(imageRef);
+                    await updateDoc(doc(db, "posts", docRef.id), {
+                        image: downloadURL,
+                    })
+                })
+        }
+
+        setLoading(false)
+        setinput("")
+        setselectedFile(null)
+        setShowEmojis(false)
+
     }
 
     return (
@@ -46,14 +94,36 @@ const Input = () => {
                         </div>
 
                     )}
-                    {!loading&&(
+                    {!loading && (
                         <div className='flex justify-between items-center'>
                             <div className='flex gap-4 text-[20px] text-[#1d9bf0]'>
                                 <label htmlFor="file">
-                                    <BsImage className='cursor-pointer'/>
+                                    <BsImage className='cursor-pointer' />
                                 </label>
-                                <input type="file" id='file' hidden onChange={addImageToPost}/>
+                                <input type="file" id='file' hidden onChange={addImageToPost} />
+                                <div className='border-[#1d9bf0] border rounded h-[18px] text-[16px] grid place-items-center'><AiOutlineGif /></div>
+                                <RiBarChart2Line className='rotate-90' />
+                                <BsEmojiSmile className='cursor-pointer' onClick={() => setShowEmojis(!showEmojis)} />
+                                <IoCalendarNumberOutline />
+                                <HiOutlineLocationMarker />
                             </div>
+                            <button
+                                className="bg-[#1d9bf0] text-white rounded-full px-4 py-1.5 font-bold shadow-md hover:bg-[#1a8cd8] disabled:hover:bg-[#1d9bf0] disabled:opacity-50 disabled:cursor-default"
+                                disabled={!input.trim() && !selectedFile}
+                                onClick={sendPost} >
+                                Tweet
+                            </button>
+
+                        </div>
+                    )}
+                    {showEmojis && (
+                        <div className='absolute mt-[10px] -ml-[40px] max-w-[320px] rounded-[20px]'>
+                            <Picker
+                                onEmojiSelect={addEmoji}
+                                data={data}
+
+                                theme="dark"
+                            />
                         </div>
                     )}
                 </div>
