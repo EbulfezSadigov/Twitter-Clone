@@ -5,6 +5,7 @@ import Feed from '../components/feed';
 import Login from '../components/login';
 import Modal from '../components/modal';
 import Sidebar from '../components/sidebar';
+import Trending from '../components/trending';
 import { AppContext } from '../contexts/appcontext';
 
 export default function Home() {
@@ -26,6 +27,7 @@ export default function Home() {
         <Sidebar />
         <div className='flex gap-6'>
             <Feed/>
+            <Trending/>
             {appcontext?.isModalOpen && <Modal/>}
         </div>
       </main>

@@ -121,10 +121,10 @@ const Post = ({ id, post }) => {
                                 e.stopPropagation()
                                 likePost()
                             }}>
-                            {liked ? <AiFillHeart className='hoverEffect w-7 h-7 p-1 text-pink-700' />
+                            {liked ? <AiFillHeart className='hoverEffect w-7 h-7 p-1 text-red-600' />
                                 : <AiOutlineHeart className='hoverEffect w-7 h-7 p-1' />}
 
-                            {likes.length > 0 && (<span className={`${liked && "text-pink-700"} text-sm`}>{likes.length}</span>)}
+                            {likes.length > 0 && (<span className={`${liked && "text-red-600"} text-sm`}>{likes.length}</span>)}
                         </div>
 
                         <AiOutlineShareAlt className='hoverEffect w-7 h-7 p-1' />

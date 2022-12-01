@@ -121,7 +121,6 @@ const Input = () => {
                             <Picker
                                 onEmojiSelect={addEmoji}
                                 data={data}
-
                                 theme="dark"
                             />
                         </div>
