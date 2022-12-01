@@ -12,7 +12,6 @@ import { db, storage } from '../firebase'
 import { getDownloadURL, ref, uploadString } from 'firebase/storage'
 
 const Input = () => {
-
     const [loading, setLoading] = useState(false)
     const [input, setinput] = useState('')
     const [showEmojis, setShowEmojis] = useState(false)
@@ -72,13 +71,13 @@ const Input = () => {
     }
 
     return (
-        <div className={`mt-4 px-4 ${loading && 'opacity-60'}`}>
+        <div className={`mt-4 px-4 pb-3 border-b-[12px] border-gray-700 ${loading && 'opacity-60'}`}>
             <div className='grid grid-cols-[48px,1fr] gap-4'>
                 <div>
                     <img src={session?.user.image} alt="" className='h-12 w-12 rounded-full object-contain' />
                 </div>
                 <div className='w-[90%]'>
-                    <textarea onChange={e => setinput(e.target.value)} className='resize-none w-[100%] bg-transparent outline-none text-[20px]' placeholder='What`s happening' rows='2' value={input}></textarea>
+                    <textarea onChange={e => setinput(e.target.value)} className='resize-none w-[100%] bg-transparent outline-none text-[18px]' placeholder='What`s happening' rows='2' value={input}></textarea>
                     {selectedFile && (
 
                         <div className="relative mb-4">
